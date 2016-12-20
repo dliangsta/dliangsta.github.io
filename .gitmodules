@@ -1,0 +1,3 @@
+[submodule "Tetris-AI"]
+	path = Tetris-AI
+	url = git@github.com:dliangsta/Tetris-AI.git
