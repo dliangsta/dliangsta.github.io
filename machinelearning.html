@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 
-   <head>
-      <meta charset="utf-8">
-      <title> Machine Learning </title>
-   </head>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="img/thumbnail.png">
+    <title> Machine Learning </title>
+</head>
 
-   <body>
-      <div id="iteration"> 0 </div>
-      <div id="bestscore"> 0 </div>
-      <button onclick="init()"> Run </button>
-      <script src="Tetris-AI/Piece.js">
-      </script>
-      <script src="Tetris-AI/Board.js"></script>
-      <script src="Tetris-AI/AI.js"></script>
-      <script src="Tetris-AI/GameManager.js"></script>
-      <script src="Tetris-AI/WeightLearner.js"></script>
-      <script>
-         var Learner;
+<body>
+    <div id="iteration"> 0 </div>
+    <div id="bestscore"> 0 </div>
+    <button onclick="init()"> Run </button>
+    <script src="Tetris-AI/Piece.js">
+    </script>
+    <script src="Tetris-AI/Board.js"></script>
+    <script src="Tetris-AI/AI.js"></script>
+    <script src="Tetris-AI/GameManager.js"></script>
+    <script src="Tetris-AI/WeightLearner.js"></script>
+    <script>
+        var Learner;
 
-         function init() {
+        function init() {
             Learner = new WeightLearner();
-         }
-      </script>
-   </body>
+        }
+    </script>
+</body>
 
 </html>
