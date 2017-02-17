@@ -128,12 +128,12 @@
    padding-left: 3%;
 }
 
-.terminal-text {
+.console-text {
    font-size: 18px;
    text-align: left;
 }
 
-.terminal-background {
+.console-background {
    border: 10px solid #222222;
    border-style: solid;
    border-top: none;
@@ -141,7 +141,7 @@
    background-color: #000000;
 }
 
-.terminal-navbar {
+.console-navbar {
    height: 40px;
    font-size: 24px;
    margin-left: 0px;
@@ -568,4 +568,11 @@ img::-moz-selection {
 
 body {
    webkit-tap-highlight-color: rgba(255, 255, 255, 0.2);
+}
+
+h6 {
+      font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+      margin: 0px 0px 0px 0px;
+      padding: 0px;
+      font-size: 18px;
 }
