@@ -16,7 +16,7 @@ Assistant.prototype.respond = function (query) {
       this.response = this.prompt;
       switch (query) {
             case 'resume':
-                  this.response +=  'Here\'s a link to my <a target="blank" class="glow" href=\'' + this.resume + '\'>' + 'resume' + '</a>!'
+                  this.response +=  'Here\'s a link to my <a target="_blank" class="glow" href=\'' + this.resume + '\'>' + 'resume' + '</a>!'
                   break;
             case 'clear':
                   this.response = 'clear';
@@ -47,21 +47,5 @@ Assistant.prototype.respond = function (query) {
 
 Assistant.prototype.welcome = function () {
       var welcome = this.getName() + 'Welcome! You can say "hi", "bye", or "how are you?"';
-      c.print100();
-      for (var i = 0; i < 4; i++) {
-            if (i == 2) {
-                  c.welcomepln(this.signedIn);
-            } else {
-                  c.welcomepln('');
-            }
-      }
-      c.welcomepln('My information: ');
-      c.welcomepln('Resume', '<a target="blank" class="glow" href=\'' + this.resume + '\'>' + 'Resume' + '</a>');
-      c.welcomepln('GitHub', '<a target="blank" class="glow" href=\'' + this.github + '\'>' + 'GitHub' + '</a>');
-      c.welcomepln('LinkedIn', '<a target="blank" class="glow" href=\'' + this.linkedin + '\'>' + 'LinkedIn' + '</a>');
-      c.welcomepln('');
-      c.welcomepln('');
-      c.print100();
-      c.pln();
       return welcome;
 };

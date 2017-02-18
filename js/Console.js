@@ -9,11 +9,11 @@ function Console() {
       this.imgHTML = "<img src=\"" + this.space.src + "\">";
       this.intervalTime = 500;
       this.recentInputTime = Date.now();
+      this.blinking = true;
 
-      this.interval = setInterval(this.blink.bind(this), this.intervalTime);
 }
 
-Console.prototype.log = function(str) {
+Console.prototype.log = function (str) {
       c.log(str);
 }
 
@@ -79,16 +79,20 @@ Console.prototype.respond = function () {
 
 Console.prototype.onKeypress = function (event) {
       if (event.code === "Enter") {
-            this.pln();
-            if (this.query !== "") {
-                  this.query = this.query.toLowerCase();
-                  if (!this.respond()) {
-                        this.end();
-                        return;
+            this.blinking = false;
+            setTimeout(function () {
+                  this.pln();
+                  if (this.query !== "") {
+                        this.query = this.query.toLowerCase();
+                        if (!this.respond()) {
+                              this.end();
+                              return;
+                        }
                   }
-            }
-            this.promptGuest();
-            this.query = "";
+                  this.promptGuest();
+                  this.query = "";
+                  this.blinking = true;
+            }.bind(this), 500);
       } else if (event.key === "") {
             this.recentInputTime = Date.now();
       } else {
@@ -111,14 +115,37 @@ Console.prototype.end = function () {
 };
 
 Console.prototype.welcome = function () {
-      this.pln(this.david.welcome());
-      this.p(this.guest.prompt);
-      this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
-      this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
+      this.print100();
+      for (var i = 0; i < 4; i++) {
+            if (i == 2) {
+                  this.welcomepln(this.david.signedIn);
+            } else {
+                  this.welcomepln('');
+            }
+      }
+      this.welcomepln('My information: ');
+      this.welcomepln('Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
+      this.welcomepln('GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
+      this.welcomepln('LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.welcomepln('');
+      this.welcomepln('');
+      this.print100();
+      this.pln();
+
+      setTimeout(function () {
+            this.pln(this.david.welcome());
+      }.bind(this), 500);
+
+      setTimeout(function () {
+            this.p(this.guest.prompt);
+            this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
+            this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
+            this.interval = setInterval(this.blink.bind(this), this.intervalTime);
+      }.bind(this), 1000);
 };
 
 Console.prototype.blink = function () {
-      if (this.over) {
+      if (this.over || !this.blinking) {
             this.clearSpace();
             return;
       }
@@ -146,5 +173,7 @@ Console.prototype.clearSpace = function () {
 var c = new Console();
 
 $(document).ready(function () {
-      c.welcome();
+      setTimeout(function () {
+            c.welcome();
+      }, 500);
 });
