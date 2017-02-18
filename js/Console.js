@@ -16,8 +16,38 @@ function Console() {
       this.guest = new User();
 }
 
-Console.prototype.log = function (str) {
-      c.log(str);
+
+Console.prototype.blink = function () {
+      if (this.over || !this.blinking) {
+            this.clearSpace();
+            return;
+      }
+      var html = $("#root")[0].innerHTML;
+      if (Date.now() - this.recentInputTime < this.intervalTime) {
+            this.clearSpace();
+            return;
+      }
+      if (!this.clearSpace()) {
+            this.p(this.imgHTML);
+      }
+
+};
+
+Console.prototype.clearSpace = function () {
+      var html = $("#root")[0].innerHTML;
+      if (html.includes(this.imgHTML)) {
+            $("#root")[0].innerHTML = html.replace(this.imgHTML, "");
+            return true;
+      } else {
+            return false;
+      }
+};
+
+Console.prototype.timeout = function (func, arg, arg2, time) {
+      var timeout = time || this.timeoutIndex++ * this.timeoutMultiplier;
+      setTimeout(function () {
+            func(arg, arg2);
+      }.bind(this), timeout);
 }
 
 Console.prototype.print100 = function () {
@@ -52,33 +82,6 @@ Console.prototype.pln = function (string) {
 Console.prototype.p = function (string) {
       if (!this.over) {
             $("#root").append(string);
-      }
-};
-
-Console.prototype.backspace = function () {
-      var text = $("#root")[0].innerHTML;
-      var imgIndex = text.lastIndexOf("<img");
-      if (text.slice(text.length - 2, text.length) != ": ") {
-            if (imgIndex >= 0) {
-                  text = text.slice(0, imgIndex-1);
-            } else {
-                  text =  text.slice(0, text.length - 1);
-            }
-            $("#root")[0].innerHTML = text;
-            this.query = this.query.slice(0, this.query.length - 1);
-      }
-};
-
-Console.prototype.promptGuest = function () {
-      this.p(this.guest.prompt);
-};
-
-Console.prototype.respond = function () {
-      if (this.david.respond(this.query) === false) {
-            return false;
-      } else {
-            this.promptGuest();
-            return true;
       }
 };
 
@@ -118,27 +121,31 @@ Console.prototype.onKeydown = function (event) {
       }
 };
 
-Console.prototype.end = function () {
-      $("#root").empty();
-      this.print100();
-      for (var i = 0; i < 4; i++) {
-            if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), "Goodbye! Come back soon to see my growth!");
+Console.prototype.backspace = function () {
+      var text = $("#root")[0].innerHTML;
+      var imgIndex = text.lastIndexOf("<img");
+      if (text.slice(text.length - 2, text.length) != ": ") {
+            if (imgIndex >= 0) {
+                  text = text.slice(0, imgIndex - 1);
             } else {
-                  this.timeout(this.welcomepln.bind(this), '');
+                  text = text.slice(0, text.length - 1);
             }
+            $("#root")[0].innerHTML = text;
+            this.query = this.query.slice(0, this.query.length - 1);
       }
-      this.timeout(this.welcomepln.bind(this), 'My information: ');
-      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.print100.bind(this));
-      this.timeout(this.pln.bind(this));
-      this.timeout(function () {
-            this.over = true;
-      }.bind(this));
+};
+
+Console.prototype.promptGuest = function () {
+      this.p(this.guest.prompt);
+};
+
+Console.prototype.respond = function () {
+      if (this.david.respond(this.query) === false) {
+            return false;
+      } else {
+            this.promptGuest();
+            return true;
+      }
 };
 
 Console.prototype.welcome = function () {
@@ -154,6 +161,7 @@ Console.prototype.welcome = function () {
       this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
       this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
       this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'Homepage', '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
@@ -168,38 +176,30 @@ Console.prototype.welcome = function () {
       this.timeoutIndex = 0;
 };
 
-Console.prototype.blink = function () {
-      if (this.over || !this.blinking) {
-            this.clearSpace();
-            return;
-      }
-      var html = $("#root")[0].innerHTML;
-      if (Date.now() - this.recentInputTime < this.intervalTime) {
-            this.clearSpace();
-            return;
-      }
-      if (!this.clearSpace()) {
-            this.p(this.imgHTML);
-      }
 
+Console.prototype.end = function () {
+      $("#root").empty();
+      this.print100();
+      for (var i = 0; i < 4; i++) {
+            if (i == 2) {
+                  this.timeout(this.welcomepln.bind(this), "Goodbye! Come back soon to see my growth!");
+            } else {
+                  this.timeout(this.welcomepln.bind(this), '');
+            }
+      }
+      this.timeout(this.welcomepln.bind(this), 'My information: ');
+      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'Homepage', '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.print100.bind(this));
+      this.timeout(this.pln.bind(this));
+      this.timeout(function () {
+            this.over = true;
+      }.bind(this));
 };
-
-Console.prototype.clearSpace = function () {
-      var html = $("#root")[0].innerHTML;
-      if (html.includes(this.imgHTML)) {
-            $("#root")[0].innerHTML = html.replace(this.imgHTML, "");
-            return true;
-      } else {
-            return false;
-      }
-};
-
-Console.prototype.timeout = function (func, arg, arg2, time) {
-      var timeout = time || this.timeoutIndex++ * this.timeoutMultiplier;
-      setTimeout(function () {
-            func(arg, arg2);
-      }.bind(this), timeout);
-}
 
 var c = new Console();
 
