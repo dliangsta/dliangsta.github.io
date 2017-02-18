@@ -183,6 +183,7 @@ Console.prototype.welcome = function () {
 
 
 Console.prototype.end = function () {
+      $("#cats").hide();
       $("#root").empty();
       this.print100();
       for (var i = 0; i < 4; i++) {
