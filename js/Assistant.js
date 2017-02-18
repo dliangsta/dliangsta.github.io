@@ -9,20 +9,16 @@ function Assistant(console) {
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.printed = 0;
       this.suggestions = [
-            "Try typing 'résumé' 'clear' or 'bye'.",
+            "Try typing 'resume' 'clear' or 'bye' to see what I can do!",
             // "How about typing 'academics' 'jokes' or 'riddles'?",
-            "You can visit my homepage by typing 'home'",
-            "You can type 'cats' 'hi' or bye'."
+            "You can visit my homepage by typing 'home' into the console.",
+            "Type 'cats' 'hi' or bye' if you'd like."
       ];
       this.suggestionIndex = 0;
       this.suggestionDelay = 5000;
       this.recentSuggestionTime = Date.now();
       this.timeout = this.loopSuggestion();
 }
-
-Assistant.prototype.getName = function () {
-      return this.name + ': ';
-};
 
 Assistant.prototype.respond = function (query) {
       this.response = "";
@@ -52,7 +48,7 @@ Assistant.prototype.respond = function (query) {
                   return true;
             case 'riddles':
             case 'jokes':
-            this.response += 'Sorry, I haven\'t actually learned this skill yet.';
+                  this.response += 'Sorry, I haven\'t actually learned this skill yet.';
                   break;
             default:
                   this.response += 'I\'m sorry, I didn\'t understand that. Please try again.';
@@ -87,7 +83,7 @@ Assistant.prototype.suggest = function () {
       if (imgIndex > index) {
             text = text.slice(0, imgIndex);
       }
-      if (text.slice(index + this.console.guest.prompt.length - 1, -1) !== "") {
+      if (text.slice(index + this.console.guest.prompt.length - 1) !== " ") {
             this.printed = 0;
             return;
       }
@@ -101,14 +97,14 @@ Assistant.prototype.suggest = function () {
 };
 
 Assistant.prototype.pln = function (str) {
-      this.console.pln(this.getName() + str)
+      this.console.pln("<span class=\"green\">" + this.prompt + str + "</span>");
 };
 
 Assistant.prototype.showCats = function () {
       $("#root").empty();
       $("#cats").toggleClass("hidden");
       $(".ytp-thumbnail-overlay").click();
-      this.response += 'I have found some cats for you to watch. Type \'clear\' to hide the video.';
+      this.response += 'I\'ve found some cats for you to watch. Type \'clear\' to hide the video.';
       this.pln(this.response);
 };
 
