@@ -11,6 +11,7 @@ function Assistant(console) {
       this.suggestions = [
             "Try typing 'résumé' 'clear' or 'bye'.",
             // "How about typing 'academics' 'jokes' or 'riddles'?",
+            "You can visit my homepage by typing 'home'",
             "You can type 'cats' 'hi' or bye'."
       ];
       this.suggestionIndex = 0;
@@ -31,6 +32,9 @@ Assistant.prototype.respond = function (query) {
             this.timeout = this.loopSuggestion();
       }
       switch (query) {
+            case 'home':
+                  this.redirectHome = true;
+                  return false;
             case 'resume':
                   this.response += 'Here\'s a link to my <a target="_blank" class="glow" href=\'' + this.resume + '\'>' + 'résumé' + '</a>!'
                   break;

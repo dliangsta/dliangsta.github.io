@@ -91,6 +91,9 @@ Console.prototype.onKeypress = function (event) {
                         this.query = this.query.toLowerCase();
                         if (!this.respond()) {
                               this.end();
+                              if (this.david.redirectHome) {
+                                    window.location.href = "home.html";
+                              }
                               return;
                         }
                   } else {
