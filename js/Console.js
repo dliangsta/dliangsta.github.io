@@ -1,8 +1,6 @@
 'user strict';
 
 function Console() {
-      this.david = new Assistant();
-      this.guest = new User();
       this.query = "";
       this.space = document.createElement("IMG");
       this.space.src = "img/space.png";
@@ -10,7 +8,12 @@ function Console() {
       this.intervalTime = 500;
       this.recentInputTime = Date.now();
       this.blinking = true;
-
+      this.welcomeDelay = 250;
+      this.responseDelay = 250;
+      this.timeoutIndex = 0;
+      this.timeoutMultiplier = 20;
+      this.david = new Assistant(this);
+      this.guest = new User();
 }
 
 Console.prototype.log = function (str) {
@@ -73,6 +76,7 @@ Console.prototype.respond = function () {
             } else {
                   this.pln(this.david.response);
             }
+            this.promptGuest();
             return true;
       }
 };
@@ -89,10 +93,10 @@ Console.prototype.onKeypress = function (event) {
                               return;
                         }
                   }
-                  this.promptGuest();
+                  // this.promptGuest();
                   this.query = "";
                   this.blinking = true;
-            }.bind(this), 500);
+            }.bind(this), this.responseDelay);
       } else if (event.key === "") {
             this.recentInputTime = Date.now();
       } else {
@@ -110,38 +114,51 @@ Console.prototype.onKeydown = function (event) {
 };
 
 Console.prototype.end = function () {
-      this.over = true;
-
+      $("#root").empty();
+      this.print100();
+      for (var i = 0; i < 4; i++) {
+            if (i == 2) {
+                  this.timeout(this.welcomepln.bind(this), "Goodbye! Come back soon to see my growth!");
+            } else {
+                  this.timeout(this.welcomepln.bind(this), '');
+            }
+      }
+      this.timeout(this.welcomepln.bind(this), 'My information: ');
+      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.print100.bind(this));
+      this.timeout(this.pln.bind(this));
+      // this.over = true;
 };
 
 Console.prototype.welcome = function () {
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
-                  this.welcomepln(this.david.signedIn);
+                  this.timeout(this.welcomepln.bind(this), this.david.signedIn);
             } else {
-                  this.welcomepln('');
+                  this.timeout(this.welcomepln.bind(this), '');
             }
       }
-      this.welcomepln('My information: ');
-      this.welcomepln('Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
-      this.welcomepln('GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
-      this.welcomepln('LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
-      this.welcomepln('');
-      this.welcomepln('');
-      this.print100();
-      this.pln();
-
-      setTimeout(function () {
-            this.pln(this.david.welcome());
-      }.bind(this), 500);
-
-      setTimeout(function () {
-            this.p(this.guest.prompt);
+      this.timeout(this.welcomepln.bind(this), 'My information: ');
+      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Resume' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.welcomepln.bind(this), '');
+      this.timeout(this.print100.bind(this));
+      this.timeout(this.pln.bind(this));
+      this.timeout(this.david.welcome.bind(this.david));
+      var listen = function () {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
             this.interval = setInterval(this.blink.bind(this), this.intervalTime);
-      }.bind(this), 1000);
+      };
+      this.timeout(listen.bind(this));
+      this.timeoutIndex = 0;
 };
 
 Console.prototype.blink = function () {
@@ -170,10 +187,17 @@ Console.prototype.clearSpace = function () {
       }
 };
 
+Console.prototype.timeout = function (func, arg, arg2, time) {
+      var timeout = time || this.timeoutIndex++ * this.timeoutMultiplier;
+      setTimeout(function () {
+            func(arg, arg2);
+      }.bind(this), timeout);
+}
+
 var c = new Console();
 
 $(document).ready(function () {
       setTimeout(function () {
             c.welcome();
-      }, 500);
+      }, c.welcomeDelay);
 });

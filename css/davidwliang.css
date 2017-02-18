@@ -589,3 +589,11 @@ h6 {
 .glow:hover {
       text-shadow: 0 0 10px grey;
 }
+
+
+
+@media (max-height: 700px) {
+      .console-text {
+            font-size: 15;
+      }
+}
