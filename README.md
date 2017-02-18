@@ -1,2 +1,2 @@
 # dliangsta.github.io
-Personal Github Page
+Personal website with a fun "terminal" experience.
