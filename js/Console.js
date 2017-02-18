@@ -57,8 +57,14 @@ Console.prototype.p = function (string) {
 
 Console.prototype.backspace = function () {
       var text = $("#root")[0].innerHTML;
+      var imgIndex = text.lastIndexOf("<img");
       if (text.slice(text.length - 2, text.length) != ": ") {
-            $("#root")[0].innerHTML = text.slice(0, text.length - 1);
+            if (imgIndex >= 0) {
+                  text = text.slice(0, imgIndex-1);
+            } else {
+                  text =  text.slice(0, text.length - 1);
+            }
+            $("#root")[0].innerHTML = text;
             this.query = this.query.slice(0, this.query.length - 1);
       }
 };
@@ -71,18 +77,13 @@ Console.prototype.respond = function () {
       if (this.david.respond(this.query) === false) {
             return false;
       } else {
-            if (this.david.response === 'clear') {
-                  $("#root").empty();
-            } else {
-                  this.pln(this.david.response);
-            }
             this.promptGuest();
             return true;
       }
 };
 
 Console.prototype.onKeypress = function (event) {
-      if (event.code === "Enter") {
+      if (event.key === "Enter") {
             this.blinking = false;
             setTimeout(function () {
                   this.pln();
@@ -92,8 +93,9 @@ Console.prototype.onKeypress = function (event) {
                               this.end();
                               return;
                         }
+                  } else {
+                        this.promptGuest();
                   }
-                  // this.promptGuest();
                   this.query = "";
                   this.blinking = true;
             }.bind(this), this.responseDelay);
@@ -131,7 +133,9 @@ Console.prototype.end = function () {
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
       this.timeout(this.pln.bind(this));
-      // this.over = true;
+      this.timeout(function () {
+            this.over = true;
+      }.bind(this));
 };
 
 Console.prototype.welcome = function () {
@@ -150,8 +154,8 @@ Console.prototype.welcome = function () {
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
-      this.timeout(this.pln.bind(this));
       this.timeout(this.david.welcome.bind(this.david));
+      this.timeout(this.promptGuest.bind(this));
       var listen = function () {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
