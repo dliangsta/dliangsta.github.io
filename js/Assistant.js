@@ -33,7 +33,7 @@ function Assistant(console) {
             "That's really interesting!"
       ];
       this.suggestionIndex = 0;
-      this.suggestionDelay = 5000;
+      this.suggestionDelay = 10000;
       this.recentSuggestionTime = Date.now();
       this.timeout = this.loopSuggestion();
 }
@@ -44,6 +44,8 @@ Assistant.prototype.respond = function (query) {
             this.clear(false);
       }
       query = query.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+      query = query.replace(new RegExp("nbsp", 'g'), " ");
+      console.log(query);
       this.printed = 0;
       this.recentSuggestionTime = Date.now();
       if (!this.timeout) {
@@ -137,7 +139,7 @@ Assistant.prototype.pln = function (str) {
       this.console.pln("<span class=\"green\">" + this.prompt + str + "</span>");
 };
 
-Assistant.randomComment = function() {
+Assistant.prototype.randomComment = function () {
       this.pln(this.randomComments[Math.floor(Math.random() * this.randomComments.length)]);
 };
 
@@ -172,12 +174,13 @@ Assistant.prototype.hello = function () {
       return true;
 };
 
-Assistant.prototype.howAreYou = function() {
+Assistant.prototype.howAreYou = function () {
       this.pln("I\'m as well as a non-living being can be! And yourself?");
+      this.comment = true;
       return true;
 };
 
-Assistant.prototype.about = function() {
+Assistant.prototype.about = function () {
       this.pln("Here are some basic facts about me!");
       for (var i = 0; i < this.info.length; i++) {
             this.pln(this.info[i]);

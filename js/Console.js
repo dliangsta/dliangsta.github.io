@@ -119,12 +119,18 @@ Console.prototype.onKeypress = function (event) {
             this.recentInputTime = Date.now();
             this.clearSpace();
             this.p(event.key);
-            this.query += event.key;
+            if (event.key === " ") {
+                  this.query += "%nbsp;";
+            } else {
+                  this.query += event.key;
+            }
       }
 };
 
 Console.prototype.onKeydown = function (event) {
-      if (event.key == "Backspace") {
+      if (event.key === " ") {
+            this.onKeypress(event);
+      } else if (event.key == "Backspace") {
             this.backspace();
       }
 };
@@ -132,12 +138,11 @@ Console.prototype.onKeydown = function (event) {
 Console.prototype.backspace = function () {
       var text = $("#root")[0].innerHTML;
       var imgIndex = text.lastIndexOf("<img");
-      if (text.slice(text.length - 2, text.length) != ": ") {
-            if (imgIndex >= 0) {
-                  text = text.slice(0, imgIndex - 1);
-            } else {
-                  text = text.slice(0, text.length - 1);
-            }
+      if (imgIndex >= 0) {
+            text = text.slice(0, imgIndex);
+      }
+      if (text.slice(text.length - 2, text.length) !== ": ") {
+            text = text.slice(0, text.length - 1);
             $("#root")[0].innerHTML = text;
             this.query = this.query.slice(0, this.query.length - 1);
       }
