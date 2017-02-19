@@ -102,8 +102,7 @@ Assistant.prototype.pln = function (str) {
 
 Assistant.prototype.showCats = function () {
       $("#root").empty();
-      $("#cats").toggleClass("hidden");
-      $(".ytp-thumbnail-overlay").click();
+      $("#cats").show();
       this.response += 'I\'ve found some cats for you to watch. Type \'clear\' to hide the video.';
       this.pln(this.response);
 };
@@ -113,5 +112,5 @@ Assistant.prototype.clear = function () {
       $("#cats").hide();
       $("#root").empty();
       this.printed++;
-      this.pln(this.suggestion);
+      this.pln(this.suggestions[this.suggestionIndex]);
 };

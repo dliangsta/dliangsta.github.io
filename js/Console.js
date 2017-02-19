@@ -210,6 +210,7 @@ Console.prototype.end = function () {
 var c = new Console();
 
 $(document).ready(function () {
+      $("#cats").hide();
       setTimeout(function () {
             c.welcome();
       }, c.welcomeDelay);
