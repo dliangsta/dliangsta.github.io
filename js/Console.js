@@ -48,14 +48,15 @@ Console.prototype.timeout = function (func, arg, arg2, time) {
       setTimeout(function () {
             func(arg, arg2);
       }.bind(this), timeout);
-}
+};
 
 Console.prototype.print100 = function () {
       for (var i = 0; i < 100; i++) {
             this.p('/');
       }
       this.pln('');
-}
+};
+
 Console.prototype.welcomepln = function (str, node) {
       this.p("//");
       for (var i = 0; i < 50 - str.length / 2; i++) {
@@ -72,7 +73,7 @@ Console.prototype.welcomepln = function (str, node) {
       }
       this.p("//");
       this.pln();
-}
+};
 
 Console.prototype.pln = function (string) {
       var str = string || "";
@@ -94,9 +95,11 @@ Console.prototype.onKeypress = function (event) {
                         this.query = this.query.toLowerCase();
                         if (!this.respond()) {
                               this.end();
-                              if (this.david.redirectHome) {
-                                    window.location.href = "home.html";
-                              }
+                              setTimeout(function () {
+                                    if (this.david.redirectHome) {
+                                          window.location.href = "home.html";
+                                    }
+                              }.bind(this), 1000);
                               return;
                         }
                   } else {
@@ -183,6 +186,7 @@ Console.prototype.welcome = function () {
 
 
 Console.prototype.end = function () {
+      $("#tetris").hide();
       $("#cats").hide();
       $("#root").empty();
       this.print100();
@@ -211,6 +215,7 @@ var c = new Console();
 
 $(document).ready(function () {
       $("#cats").hide();
+      $("#tetris").hide();
       setTimeout(function () {
             c.welcome();
       }, c.welcomeDelay);

@@ -2,17 +2,35 @@ function Assistant(console) {
       this.console = console;
       this.name = 'david@DAVIDWLIANG';
       this.prompt = this.name + ': ';
-      this.response = null;
       this.resume = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
       this.github = "https://github.com/dliangsta";
       this.linkedin = "https://linkedin.com/in/dliangsta";
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.printed = 0;
       this.suggestions = [
-            "Try typing 'resume' 'clear' or 'bye' to see what I can do!",
-            // "How about typing 'academics' 'jokes' or 'riddles'?",
+            "Try typing 'help' 'tetris' or a bit of basic conversation!",
+            "I understand 'social' 'help' and 'resume'!",
+            "How about typing 'clear' 'cats' or 'exit'?",
+            "You can ask 'who are you?' 'about' or 'how are you?' if you'd like.",
             "You can visit my homepage by typing 'home' into the console.",
-            "Type 'cats' 'hi' or bye' if you'd like."
+            "Type 'cats' 'hi' or bye' if you want."
+      ];
+      this.hellos = [
+            "Hey there.",
+            "Greetings.",
+            "Hello."
+      ];
+      this.info = [
+            "I'm a university student at University of Wisconsin-Madison!",
+            "My majors are computer science and mathematics.",
+            "I have an older brother and two older sisters!",
+            "I'm originally from Milwaukee, Wisconsin.",
+            "I really enjoy ultimate frisbee, rubiks cube speed-solving, and rock climbing!"
+      ];
+      this.randomComments = [
+            "That's great!",
+            "Awesome, very cool!",
+            "That's really interesting!"
       ];
       this.suggestionIndex = 0;
       this.suggestionDelay = 5000;
@@ -21,41 +39,60 @@ function Assistant(console) {
 }
 
 Assistant.prototype.respond = function (query) {
-      this.response = "";
+      if (this.showingTetris) {
+            this.showingTetris = false;
+            this.clear(false);
+      }
+      query = query.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
       this.printed = 0;
       this.recentSuggestionTime = Date.now();
       if (!this.timeout) {
             this.timeout = this.loopSuggestion();
       }
+      if (this.comment) {
+            this.comment = false;
+            return this.randomComment();
+      }
+
       switch (query) {
             case 'home':
-                  this.redirectHome = true;
-                  return false;
+                  return this.home();
             case 'resume':
-                  this.response += 'Here\'s a link to my <a target="_blank" class="glow" href=\'' + this.resume + '\'>' + 'résumé' + '</a>!'
-                  break;
+                  return this.showResume();
+            case 'clc':
             case 'clear':
-                  this.clear();
-                  return true;
+                  return this.clear(true);
             case 'hi':
-                  this.response += 'Hey there.';
-                  break;
+            case 'hey':
+            case 'yo':
+            case 'hello':
+            case 'heyo':
+                  return this.hello();
+            case 'how are you':
+                  return this.howAreYou();
+            case 'who are you':
+            case 'about':
+                  return this.about();
+            case 'exit':
+            case 'quit':
             case 'bye':
-                  this.response += 'Bye!';
-                  return false;
+                  return this.quit();
+            case 'github':
+                  return this.github();
+            case 'linkedin':
+                  return this.linkedIn();
+            case 'tetris':
+                  return this.tetris();
+            case 'help':
+                  return this.help();
             case 'cats':
-                  this.showCats();
-                  return true;
+                  return this.showCats();
             case 'riddles':
             case 'jokes':
-                  this.response += 'Sorry, I haven\'t actually learned this skill yet.';
-                  break;
+                  return this.notYet();
             default:
-                  this.response += 'I\'m sorry, I didn\'t understand that. Please try again.';
-                  this.suggestNow = true;
+                  return this.defaultResponse();
       }
-      this.pln(this.response);
-      return true;
 };
 
 Assistant.prototype.welcome = function () {
@@ -100,17 +137,104 @@ Assistant.prototype.pln = function (str) {
       this.console.pln("<span class=\"green\">" + this.prompt + str + "</span>");
 };
 
+Assistant.randomComment = function() {
+      this.pln(this.randomComments[Math.floor(Math.random() * this.randomComments.length)]);
+};
+
 Assistant.prototype.showCats = function () {
       $("#root").empty();
       $("#cats").show();
-      this.response += 'I\'ve found some cats for you to watch. Type \'clear\' to hide the video.';
-      this.pln(this.response);
+      this.pln('I\'ve found some cats for you to watch. Type \'clear\' to hide the video.');
+      return true;
 };
 
-Assistant.prototype.clear = function () {
+Assistant.prototype.clear = function (suggest) {
       this.response = 'clear';
+      $("#tetris").hide();
       $("#cats").hide();
       $("#root").empty();
-      this.printed++;
-      this.pln(this.suggestions[this.suggestionIndex]);
+      this.showingTetris = false;
+      GM.stopped = true;
+      if (suggest) {
+            this.printed++;
+            this.pln(this.suggestions[this.suggestionIndex]);
+      }
+      return true;
+};
+
+Assistant.prototype.notYet = function () {
+      this.pln('Sorry, I haven\'t actually learned this skill yet. Try again soon!');
+      return true;
+};
+
+Assistant.prototype.hello = function () {
+      this.pln(this.hellos[Math.floor(Math.random() * this.hellos.length)]);
+      return true;
+};
+
+Assistant.prototype.howAreYou = function() {
+      this.pln("I\'m as well as a non-living being can be! And yourself?");
+      return true;
+};
+
+Assistant.prototype.about = function() {
+      this.pln("Here are some basic facts about me!");
+      for (var i = 0; i < this.info.length; i++) {
+            this.pln(this.info[i]);
+      }
+      this.pln("How about yourself?");
+      this.comment = true;
+      return true;
+};
+
+Assistant.prototype.quit = function () {
+      this.pln("See you sooon!");
+      return false;
+};
+
+Assistant.prototype.home = function () {
+      this.redirectHome = true;
+      return false;
+};
+
+Assistant.prototype.showResume = function () {
+      this.pln('Here\'s the link to my <a target="_blank" class="glow" href=\'' + this.resume + '\'> résumé </a>!');
+      return true;
+};
+
+Assistant.prototype.github = function () {
+      this.pln('Here\'s my <a target="_blank" class="glow" href=\'http://dliangsta.github.io\'> GitHub </a>!');
+      return true;
+};
+
+Assistant.prototype.linkedIn = function () {
+      this.pln('Here\s my <a target="_blank" class="glow" href=\'http://linkedin.com/in/dliangsta\'> LinkedIn </a>! Feel free to connect with me!');
+      return true;
+};
+
+Assistant.prototype.tetris = function () {
+      this.showingTetris = true;
+      $("#root").empty();
+      $("#tetris").show();
+      GameManager.setup(GM);
+      $("#play-button").click();
+      this.printed = this.suggestions.length;
+      this.pln('Have fun! Type \'clear\' to hide the game.');
+      return true;
+};
+
+Assistant.prototype.help = function () {
+      this.pln("Let me give you some suggestions.");
+      this.printed = this.suggestions.length;
+      for (var i = 0; i < this.suggestions.length; i++) {
+            this.pln(this.suggestions[i]);
+      }
+      this.pln("Hope that was helpful!");
+      return true;
+};
+
+Assistant.prototype.defaultResponse = function () {
+      this.pln('I\'m sorry, I didn\'t understand that. Please try again.');
+      this.suggestNow = true;
+      return true;
 };
