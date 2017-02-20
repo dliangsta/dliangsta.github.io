@@ -10,7 +10,7 @@ function Assistant(console) {
       this.printed = 0;
       this.suggestions = [
             "Try typing 'help' 'tetris' or a bit of basic conversation!",
-            "I understand 'information' 'linkedin' and 'resume'!",
+            "I understand 'information' 'projects' and 'resume'!",
             "How about typing 'clear' 'cats' or 'exit'?",
             "You can ask 'who are you?' 'about' or 'how are you?' if you'd like.",
             "You can visit my homepage by typing 'home' into the console.",
@@ -32,6 +32,12 @@ function Assistant(console) {
             "That's great!",
             "Awesome, very cool!",
             "That's really interesting!"
+      ];
+      this.projectDivs = [
+            hyperlink("Video Style Transfer","http://dliangsta.github.io/Style-Transfer"),
+            hyperlink("Speech Games","http://aravart.github.io/speech-games"),
+            hyperlink("Neural Network Digit Recognition", "https://github.com/dliangsta/Neural-Digit-Recognition"),
+            "You can also type '" + hyperlink("Tetris","http://github.com/dliangsta/Tetris-AI") + "' to play Tetris or to watch my AI!"
       ];
       this.suggestionIndex = 0;
       this.suggestionDelay = 5000;
@@ -85,6 +91,9 @@ Assistant.prototype.respond = function (query) {
             case 'social':
             case 'social information':
                   return this.social();
+            case 'project':
+            case 'projects':
+                  return this.projects();
             case 'email':
                   return this.email();
             case 'github':
@@ -210,6 +219,15 @@ Assistant.prototype.home = function () {
 
 Assistant.prototype.social = function () {
       this.pln("Here's my information! " + this.console.socialDivs);
+      return true;
+};
+
+Assistant.prototype.projects = function() {
+      this.pln("Here are the projects that I've done!");
+      for (var i = 0; i < this.projectDivs.length; i++) {
+            this.pln(this.projectDivs[i]);
+      }
+      this.pln("Thanks for taking the time to check them out!");
       return true;
 };
 

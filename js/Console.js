@@ -14,12 +14,12 @@ function Console() {
       this.timeoutMultiplier = 20;
       this.david = new Assistant(this);
       this.guest = new User();
-      this.emailDiv = '<a target="_blank" class="glow" href=\'' + this.david.emailAddr + '\'>' + 'Email' + '</a>';
-      this.resumeDiv = '<a target="_blank" class="glow" href=\'' + this.david.resumeURL + '\'>' + 'Résumé' + '</a>';
-      this.githubDiv = '<a target="_blank" class="glow" href=\'' + this.david.githubURL + '\'>' + 'GitHub' + '</a>';
-      this.linkedinDiv = '<a target="_blank" class="glow" href=\'' + this.david.linkedinURL + '\'>' + 'LinkedIn' + '</a>';
-      this.homeDiv = '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>';
-      this.socialStr = 'Email Resume GitHub LinkedIn Homepage';
+      this.emailDiv = hyperlink("Email", this.david.emailAddr);
+      this.resumeDiv = hyperlink("Résumé", this.david.resumeURL);
+      this.githubDiv = hyperlink("GitHub", this.david.githubURL);
+      this.linkedinDiv = hyperlink("LinkedIn", this.david.linkedinURL);
+      this.homeDiv = hyperlink("Home page", "home.html");
+      this.socialStr = 'Email Resume GitHub LinkedIn Home page';
       this.socialDivs = this.emailDiv + " " + this.resumeDiv + " " + this.githubDiv + " " + this.linkedinDiv + " " + this.homeDiv;
 }
 
@@ -230,3 +230,7 @@ $(document).ready(function () {
             c.welcome();
       }, c.welcomeDelay);
 });
+
+function hyperlink(text, url) {
+      return '<a target="_blank" class="glow" href=\'' + url + '\'>' + text + '</a>';
+}
