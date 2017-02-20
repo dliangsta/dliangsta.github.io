@@ -1,26 +1,19 @@
 'user strict';
 
-function Console() {
+function Console(assistant) {
       this.query = "";
+      this.buffer ="";
       this.space = document.createElement("IMG");
       this.space.src = "img/space.png";
       this.imgHTML = "<img src=\"" + this.space.src + "\">";
       this.intervalTime = 500;
       this.recentInputTime = Date.now();
       this.blinking = true;
-      this.welcomeDelay = 250;
       this.responseDelay = 250;
       this.timeoutIndex = 0;
       this.timeoutMultiplier = 20;
-      this.david = new Assistant(this);
-      this.guest = new User();
-      this.emailDiv = hyperlink("Email", this.david.emailAddr);
-      this.resumeDiv = hyperlink("Résumé", this.david.resumeURL);
-      this.githubDiv = hyperlink("GitHub", this.david.githubURL);
-      this.linkedinDiv = hyperlink("LinkedIn", this.david.linkedinURL);
-      this.homeDiv = hyperlink("Home page", "home.html");
-      this.socialStr = 'Email Resume GitHub LinkedIn Home page';
-      this.socialDivs = this.emailDiv + " " + this.resumeDiv + " " + this.githubDiv + " " + this.linkedinDiv + " " + this.homeDiv;
+      this.assistant = assistant;
+      this.guest = this.assistant.guest;
 }
 
 
@@ -76,7 +69,7 @@ Console.prototype.welcomepln = function (str, node) {
       }
 
       for (var i = 0; i < 50 - (str.length + 1) / 2 - 4; i++) {
-            c.p("&nbsp;");
+            this.p("&nbsp;");
       }
       this.p("//");
       this.pln();
@@ -100,14 +93,14 @@ Console.prototype.p = function (string) {
 Console.prototype.onKeypress = function (event) {
       if (event.key === "Enter") {
             this.blinking = false;
+            this.waiting = true;
             setTimeout(function () {
                   this.pln();
                   if (this.query !== "") {
-                        this.query = this.query.toLowerCase();
                         if (!this.respond()) {
                               this.end();
                               setTimeout(function () {
-                                    if (this.david.redirectHome) {
+                                    if (this.assistant.redirectHome) {
                                           window.location.href = "home.html";
                                     }
                               }.bind(this), 1000);
@@ -116,20 +109,31 @@ Console.prototype.onKeypress = function (event) {
                   } else {
                         this.promptGuest();
                   }
-                  this.query = "";
+                  this.query = this.buffer;
+                  this.buffer = "";
                   this.blinking = true;
+                  this.waiting = false;
             }.bind(this), this.responseDelay);
 
       } else if (event.key === "") {
             this.recentInputTime = Date.now();
       } else {
-            this.recentInputTime = Date.now();
-            this.clearSpace();
-            this.p(event.key);
-            if (event.key === " ") {
-                  this.query += "%nbsp;";
+            var buffer;
+            if (this.waiting) {
+                  if (event.key === " ") {
+                        this.buffer += "%nbsp;";
+                  } else {
+                        this.buffer += event.key;
+                  }
             } else {
-                  this.query += event.key;
+                  this.recentInputTime = Date.now();
+                  this.clearSpace();
+                  this.p(event.key);
+                  if (event.key === " ") {
+                        this.query += "%nbsp;";
+                  } else {
+                        this.query += event.key;
+                  }
             }
       }
 };
@@ -156,11 +160,11 @@ Console.prototype.backspace = function () {
 };
 
 Console.prototype.promptGuest = function () {
-      this.p(this.guest.prompt);
+      this.p(this.guest.prompt + this.buffer);
 };
 
 Console.prototype.respond = function () {
-      if (this.david.respond(this.query) === false) {
+      if (this.assistant.respond(this.query) === false) {
             return false;
       } else {
             this.promptGuest();
@@ -172,7 +176,7 @@ Console.prototype.welcome = function () {
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), this.david.signedIn);
+                  this.timeout(this.welcomepln.bind(this), brain.signedIn);
             } else {
                   this.timeout(this.welcomepln.bind(this), '');
             }
@@ -181,9 +185,9 @@ Console.prototype.welcome = function () {
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
-      this.timeout(this.david.welcome.bind(this.david));
+      this.timeout(this.assistant.welcome.bind(this.assistant));
       this.timeout(this.promptGuest.bind(this));
-      this.timeout(this.david.suggest.bind(this.david));
+      this.timeout(this.assistant.suggest.bind(this.assistant));
       var listen = function () {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
@@ -201,8 +205,8 @@ Console.prototype.end = function () {
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), "You are now signed out of guest@DAVIDWLIANG")
-                  this.timeout(this.welcomepln.bind(this), "Come back soon to see my growth!");
+                  this.timeout(this.welcomepln.bind(this), brain.signedOut);
+                  this.timeout(this.welcomepln.bind(this), brain.comeBackSoon);
             } else {
                   this.timeout(this.welcomepln.bind(this), '');
             }
@@ -218,17 +222,16 @@ Console.prototype.end = function () {
 };
 
 Console.prototype.printInformation = function (func) {
-      this.timeout(func.bind(this), this.socialStr, this.socialDivs);
-}
-
-var c = new Console();
+      this.timeout(func.bind(this), brain.socialStr, brain.socialDivs);
+};
 
 $(document).ready(function () {
+      assistant = new Assistant();
       $("#cats").hide();
       $("#tetris").hide();
       setTimeout(function () {
-            c.welcome();
-      }, c.welcomeDelay);
+            assistant.console.welcome();
+      }, assistant.welcomeDelay);
 });
 
 function hyperlink(text, url) {

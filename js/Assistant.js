@@ -1,48 +1,15 @@
 function Assistant(console) {
-      this.console = console;
+      this.guest = guest = new Guest();
+      this.brain = brain = new Brain(this);
+      this.console = console = new Console(this);
       this.name = 'david@DAVIDWLIANG';
       this.prompt = this.name + ': ';
-      this.emailAddr = "david.liang@wisc.edu";
-      this.resumeURL = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
-      this.githubURL = "https://github.com/dliangsta";
-      this.linkedinURL = "https://linkedin.com/in/dliangsta";
-      this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
-      this.printed = 0;
-      this.suggestions = [
-            "Try typing 'help' 'tetris' or a bit of basic conversation!",
-            "I understand 'information' 'projects' and 'resume'!",
-            "How about typing 'clear' 'cats' or 'exit'?",
-            "You can ask 'who are you?' 'about' or 'how are you?' if you'd like.",
-            "You can visit my homepage by typing 'home' into the console.",
-            "Type 'cats' 'hi' or bye' if you want."
-      ];
-      this.hellos = [
-            "Hey there.",
-            "Greetings.",
-            "Hello."
-      ];
-      this.info = [
-            "I'm a university student at University of Wisconsin-Madison!",
-            "My majors are computer science and mathematics.",
-            "I have an older brother and two older sisters!",
-            "I'm originally from Milwaukee, Wisconsin.",
-            "I really enjoy ultimate frisbee, rubiks cube speed-solving, and rock climbing!"
-      ];
-      this.randomComments = [
-            "That's great!",
-            "Awesome, very cool!",
-            "That's really interesting!"
-      ];
-      this.projectDivs = [
-            hyperlink("Video Style Transfer","http://dliangsta.github.io/Style-Transfer"),
-            hyperlink("Speech Games","http://aravart.github.io/speech-games"),
-            hyperlink("Neural Network Digit Recognition", "https://github.com/dliangsta/Neural-Digit-Recognition"),
-            "You can also type '" + hyperlink("Tetris","http://github.com/dliangsta/Tetris-AI") + "' to play Tetris or to watch my AI!"
-      ];
       this.suggestionIndex = 0;
       this.suggestionDelay = 5000;
       this.recentSuggestionTime = Date.now();
       this.timeout = this.loopSuggestion();
+      this.printed = 0;
+      this.welcomeDelay = 250;
 }
 
 Assistant.prototype.respond = function (query) {
@@ -50,6 +17,7 @@ Assistant.prototype.respond = function (query) {
             this.showingTetris = false;
             this.clear(false);
       }
+      query = query.toLowerCase();
       query = query.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
       query = query.replace(new RegExp("nbsp", 'g'), " ").trim();
       console.log(query);
@@ -119,11 +87,11 @@ Assistant.prototype.welcome = function () {
 };
 
 Assistant.prototype.loopSuggestion = function () {
-      if (this.console.over || this.printed >= this.suggestions.length) {
+      if (this.console.over || this.printed >= this.brain.suggestions.length) {
             clearTimeout(this.timeout);
             this.timeout = null;
             return;
-      } else if (Date.now() - this.console.recentInputTime > this.suggestionDelay && Date.now() - this.recentSuggestionTime > this.suggestionDelay) {
+      } else if (Date.now() - this.console.recentInputTime > this.suggestionDelay && Date.now() - this.brain.recentSuggestionTime > this.suggestionDelay) {
             this.suggest();
             this.recentSuggestionTime = Date.now();
       }
@@ -146,8 +114,8 @@ Assistant.prototype.suggest = function () {
       this.printed++;
       this.suggestNow = false;
       $("#root")[0].innerHTML = text.slice(0, index);
-      this.suggestion = this.suggestions[this.suggestionIndex++];
-      this.suggestionIndex %= this.suggestions.length;
+      this.suggestion = this.brain.suggestions[this.suggestionIndex++];
+      this.suggestionIndex %= this.brain.suggestions.length;
       this.pln(this.suggestion);
       this.console.promptGuest();
 };
@@ -157,7 +125,7 @@ Assistant.prototype.pln = function (str) {
 };
 
 Assistant.prototype.randomComment = function () {
-      this.pln(this.randomComments[Math.floor(Math.random() * this.randomComments.length)]);
+      this.pln(this.brain.randomComments[Math.floor(Math.random() * this.brain.randomComments.length)]);
 };
 
 Assistant.prototype.showCats = function () {
@@ -170,13 +138,16 @@ Assistant.prototype.showCats = function () {
 Assistant.prototype.clear = function (suggest) {
       this.response = 'clear';
       $("#tetris").hide();
+      var url = $('#cats').attr('src');
+      $('#cats').attr('src', '');
+      $('#cats').attr('src', url);
       $("#cats").hide();
       $("#root").empty();
       this.showingTetris = false;
       GM.stopped = true;
       if (suggest) {
             this.printed++;
-            this.pln(this.suggestions[this.suggestionIndex]);
+            this.pln(this.brain.suggestions[this.suggestionIndex]);
       }
       return true;
 };
@@ -187,7 +158,7 @@ Assistant.prototype.notYet = function () {
 };
 
 Assistant.prototype.hello = function () {
-      this.pln(this.hellos[Math.floor(Math.random() * this.hellos.length)]);
+      this.pln(this.brain.hellos[Math.floor(Math.random() * this.brain.hellos.length)]);
       return true;
 };
 
@@ -200,7 +171,7 @@ Assistant.prototype.howAreYou = function () {
 Assistant.prototype.about = function () {
       this.pln("Here are some basic facts about me!");
       for (var i = 0; i < this.info.length; i++) {
-            this.pln(this.info[i]);
+            this.pln(this.brain.info[i]);
       }
       this.pln("How about yourself?");
       this.comment = true;
@@ -218,37 +189,37 @@ Assistant.prototype.home = function () {
 };
 
 Assistant.prototype.social = function () {
-      this.pln("Here's my information! " + this.console.socialDivs);
+      this.pln("Here's my information! " + this.brain.socialDivs);
       return true;
 };
 
-Assistant.prototype.projects = function() {
+Assistant.prototype.projects = function () {
       this.pln("Here are the projects that I've done!");
-      for (var i = 0; i < this.projectDivs.length; i++) {
-            this.pln(this.projectDivs[i]);
+      for (var i = 0; i < this.brain.projectDivs.length; i++) {
+            this.pln(this.brain.projectDivs[i]);
       }
       this.pln("Thanks for taking the time to check them out!");
       return true;
 };
 
 Assistant.prototype.showResume = function () {
-      this.pln('Here\'s the link to my ' + this.console.resumeDiv.toLowerCase() + '!');
+      this.pln('Here\'s the link to my ' + this.brain.resumeDiv.toLowerCase() + '!');
       return true;
 };
 
 Assistant.prototype.email = function () {
-      this.pln("Here's my " + this.console.emailDiv.toLowerCase() + "! ");
+      this.pln("Here's my " + this.brain.emailDiv.toLowerCase() + "! ");
       return true;
 };
 
 
 Assistant.prototype.github = function () {
-      this.pln('Here\'s my ' + this.console.githubDiv.toLowerCase() + '!');
+      this.pln('Here\'s my ' + this.brain.githubDiv.toLowerCase() + '!');
       return true;
 };
 
 Assistant.prototype.linkedIn = function () {
-      this.pln('Here\s my ' + this.console.linkedinDiv + '! Feel free to connect with me!');
+      this.pln('Here\s my ' + this.brain.linkedinDiv + '! Feel free to connect with me!');
       return true;
 };
 
@@ -258,16 +229,16 @@ Assistant.prototype.tetris = function () {
       $("#tetris").show();
       GameManager.setup(GM);
       $("#play-button").click();
-      this.printed = this.suggestions.length;
+      this.printed = this.brain.suggestions.length;
       this.pln('Have fun! Type \'clear\' to hide the game.');
       return true;
 };
 
 Assistant.prototype.help = function () {
       this.pln("Let me give you some suggestions.");
-      this.printed = this.suggestions.length;
-      for (var i = 0; i < this.suggestions.length; i++) {
-            this.pln(this.suggestions[i]);
+      this.printed = this.brain.suggestions.length;
+      for (var i = 0; i < this.brain.suggestions.length; i++) {
+            this.pln(this.brain.suggestions[i]);
       }
       this.pln("Hope that was helpful!");
       return true;
