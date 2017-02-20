@@ -14,6 +14,13 @@ function Console() {
       this.timeoutMultiplier = 20;
       this.david = new Assistant(this);
       this.guest = new User();
+      this.emailDiv = '<a target="_blank" class="glow" href=\'' + this.david.emailAddr + '\'>' + 'Email' + '</a>';
+      this.resumeDiv = '<a target="_blank" class="glow" href=\'' + this.david.resumeURL + '\'>' + 'Résumé' + '</a>';
+      this.githubDiv = '<a target="_blank" class="glow" href=\'' + this.david.githubURL + '\'>' + 'GitHub' + '</a>';
+      this.linkedinDiv = '<a target="_blank" class="glow" href=\'' + this.david.linkedinURL + '\'>' + 'LinkedIn' + '</a>';
+      this.homeDiv = '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>';
+      this.socialStr = 'Email Resume GitHub LinkedIn Homepage';
+      this.socialDivs = this.emailDiv + " " + this.resumeDiv + " " + this.githubDiv + " " + this.linkedinDiv + " " + this.homeDiv;
 }
 
 
@@ -170,11 +177,7 @@ Console.prototype.welcome = function () {
                   this.timeout(this.welcomepln.bind(this), '');
             }
       }
-      this.timeout(this.welcomepln.bind(this), 'My information: ');
-      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Résumé' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.githubURL + '\'>' + 'GitHub' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedinURL + '\'>' + 'LinkedIn' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'Homepage', '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>');
+      this.printInformation(this.welcomepln.bind(this));
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
@@ -198,16 +201,13 @@ Console.prototype.end = function () {
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), "Goodbye! Come back soon to see my growth!");
+                  this.timeout(this.welcomepln.bind(this), "You are now signed out of guest@DAVIDWLIANG")
+                  this.timeout(this.welcomepln.bind(this), "Come back soon to see my growth!");
             } else {
                   this.timeout(this.welcomepln.bind(this), '');
             }
       }
-      this.timeout(this.welcomepln.bind(this), 'My information: ');
-      this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Résumé' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'Homepage', '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>');
+      this.printInformation(this.welcomepln.bind(this));
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
@@ -216,6 +216,10 @@ Console.prototype.end = function () {
             this.over = true;
       }.bind(this));
 };
+
+Console.prototype.printInformation = function (func) {
+      this.timeout(func.bind(this), this.socialStr, this.socialDivs);
+}
 
 var c = new Console();
 

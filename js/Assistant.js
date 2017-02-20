@@ -2,14 +2,15 @@ function Assistant(console) {
       this.console = console;
       this.name = 'david@DAVIDWLIANG';
       this.prompt = this.name + ': ';
-      this.resume = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
+      this.emailAddr = "david.liang@wisc.edu";
+      this.resumeURL = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
       this.githubURL = "https://github.com/dliangsta";
       this.linkedinURL = "https://linkedin.com/in/dliangsta";
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.printed = 0;
       this.suggestions = [
             "Try typing 'help' 'tetris' or a bit of basic conversation!",
-            "I understand 'github' 'linkedin' and 'resume'!",
+            "I understand 'information' 'linkedin' and 'resume'!",
             "How about typing 'clear' 'cats' or 'exit'?",
             "You can ask 'who are you?' 'about' or 'how are you?' if you'd like.",
             "You can visit my homepage by typing 'home' into the console.",
@@ -44,7 +45,7 @@ Assistant.prototype.respond = function (query) {
             this.clear(false);
       }
       query = query.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
-      query = query.replace(new RegExp("nbsp", 'g'), " ");
+      query = query.replace(new RegExp("nbsp", 'g'), " ").trim();
       console.log(query);
       this.printed = 0;
       this.recentSuggestionTime = Date.now();
@@ -79,6 +80,13 @@ Assistant.prototype.respond = function (query) {
             case 'quit':
             case 'bye':
                   return this.quit();
+            case 'info':
+            case 'information':
+            case 'social':
+            case 'social information':
+                  return this.social();
+            case 'email':
+                  return this.email();
             case 'github':
                   return this.github();
             case 'linkedin':
@@ -200,18 +208,29 @@ Assistant.prototype.home = function () {
       return false;
 };
 
-Assistant.prototype.showResume = function () {
-      this.pln('Here\'s the link to my <a target="_blank" class="glow" href=\'' + this.resume + '\'> résumé </a>!');
+Assistant.prototype.social = function () {
+      this.pln("Here's my information! " + this.console.socialDivs);
       return true;
 };
 
+Assistant.prototype.showResume = function () {
+      this.pln('Here\'s the link to my ' + this.console.resumeDiv.toLowerCase() + '!');
+      return true;
+};
+
+Assistant.prototype.email = function () {
+      this.pln("Here's my " + this.console.emailDiv.toLowerCase() + "! ");
+      return true;
+};
+
+
 Assistant.prototype.github = function () {
-      this.pln('Here\'s my <a target="_blank" class="glow" href=\'http://dliangsta.github.io\'> GitHub </a>!');
+      this.pln('Here\'s my ' + this.console.githubDiv.toLowerCase() + '!');
       return true;
 };
 
 Assistant.prototype.linkedIn = function () {
-      this.pln('Here\s my <a target="_blank" class="glow" href=\'http://linkedin.com/in/dliangsta\'> LinkedIn </a>! Feel free to connect with me!');
+      this.pln('Here\s my ' + this.console.linkedinDiv + '! Feel free to connect with me!');
       return true;
 };
 
