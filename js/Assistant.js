@@ -91,7 +91,7 @@ Assistant.prototype.loopSuggestion = function () {
             clearTimeout(this.timeout);
             this.timeout = null;
             return;
-      } else if (Date.now() - this.console.recentInputTime > this.suggestionDelay && Date.now() - this.brain.recentSuggestionTime > this.suggestionDelay) {
+      } else if (Date.now() - this.console.recentInputTime > this.suggestionDelay && Date.now() - this.recentSuggestionTime > this.suggestionDelay) {
             this.suggest();
             this.recentSuggestionTime = Date.now();
       }
