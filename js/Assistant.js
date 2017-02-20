@@ -3,13 +3,13 @@ function Assistant(console) {
       this.name = 'david@DAVIDWLIANG';
       this.prompt = this.name + ': ';
       this.resume = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
-      this.github = "https://github.com/dliangsta";
-      this.linkedin = "https://linkedin.com/in/dliangsta";
+      this.githubURL = "https://github.com/dliangsta";
+      this.linkedinURL = "https://linkedin.com/in/dliangsta";
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.printed = 0;
       this.suggestions = [
             "Try typing 'help' 'tetris' or a bit of basic conversation!",
-            "I understand 'social' 'help' and 'resume'!",
+            "I understand 'github' 'linkedin' and 'resume'!",
             "How about typing 'clear' 'cats' or 'exit'?",
             "You can ask 'who are you?' 'about' or 'how are you?' if you'd like.",
             "You can visit my homepage by typing 'home' into the console.",
@@ -33,7 +33,7 @@ function Assistant(console) {
             "That's really interesting!"
       ];
       this.suggestionIndex = 0;
-      this.suggestionDelay = 10000;
+      this.suggestionDelay = 5000;
       this.recentSuggestionTime = Date.now();
       this.timeout = this.loopSuggestion();
 }

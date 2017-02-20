@@ -83,6 +83,10 @@ Console.prototype.pln = function (string) {
 Console.prototype.p = function (string) {
       if (!this.over) {
             $("#root").append(string);
+            while ($("#root").height() >= 700) {
+                  var ind = $("#root")[0].innerHTML.slice(1).indexOf("<br>");
+                  $("#root")[0].innerHTML = $("#root")[0].innerHTML.slice(ind + 1);
+            }
       }
 };
 
@@ -107,10 +111,6 @@ Console.prototype.onKeypress = function (event) {
                   }
                   this.query = "";
                   this.blinking = true;
-                  while ($("#root").height() >= 700) {
-                        var ind = $("#root")[0].innerHTML.slice(1).indexOf("<br>");
-                        $("#root")[0].innerHTML = $("#root")[0].innerHTML.slice(ind + 1);
-                  }
             }.bind(this), this.responseDelay);
 
       } else if (event.key === "") {
@@ -172,14 +172,15 @@ Console.prototype.welcome = function () {
       }
       this.timeout(this.welcomepln.bind(this), 'My information: ');
       this.timeout(this.welcomepln.bind(this), 'Resume', '<a target="_blank" class="glow" href=\'' + this.david.resume + '\'>' + 'Résumé' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.github + '\'>' + 'GitHub' + '</a>');
-      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedin + '\'>' + 'LinkedIn' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'GitHub', '<a target="_blank" class="glow" href=\'' + this.david.githubURL + '\'>' + 'GitHub' + '</a>');
+      this.timeout(this.welcomepln.bind(this), 'LinkedIn', '<a target="_blank" class="glow" href=\'' + this.david.linkedinURL + '\'>' + 'LinkedIn' + '</a>');
       this.timeout(this.welcomepln.bind(this), 'Homepage', '<a target="_blank" class="glow" href=\'' + "home.html" + '\'>' + 'Homepage' + '</a>');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
       this.timeout(this.david.welcome.bind(this.david));
       this.timeout(this.promptGuest.bind(this));
+      this.timeout(this.david.suggest.bind(this.david));
       var listen = function () {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
