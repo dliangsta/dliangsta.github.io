@@ -1,7 +1,7 @@
-function Assistant(console) {
+function Assistant() {
       this.guest = guest = new Guest();
       this.brain = brain = new Brain(this);
-      this.console = console = new Console(this);
+      consoul = new Consoul(this);
       this.name = 'david@DAVIDWLIANG';
       this.prompt = this.name + ': ';
       this.suggestionIndex = 0;
@@ -83,15 +83,18 @@ Assistant.prototype.respond = function (query) {
 };
 
 Assistant.prototype.welcome = function () {
-      this.pln('Welcome! I\'m David Liang and I\'ll be helping you get to know me!');
+      consoul.welcome();
+      consoul.timeout(consoul.promptGuest.bind(consoul));
+      consoul.timeout(this.suggest.bind(assistant));
+      consoul.timeoutIndex = 0;
 };
 
 Assistant.prototype.loopSuggestion = function () {
-      if (this.console.over || this.printed >= this.brain.suggestions.length) {
+      if (consoul.over || this.printed >= this.brain.suggestions.length) {
             clearTimeout(this.timeout);
             this.timeout = null;
             return;
-      } else if (Date.now() - this.console.recentInputTime > this.suggestionDelay && Date.now() - this.recentSuggestionTime > this.suggestionDelay) {
+      } else if (Date.now() - consoul.recentInputTime > this.suggestionDelay && Date.now() - this.recentSuggestionTime > this.suggestionDelay) {
             this.suggest();
             this.recentSuggestionTime = Date.now();
       }
@@ -101,27 +104,27 @@ Assistant.prototype.loopSuggestion = function () {
 };
 
 Assistant.prototype.suggest = function () {
-      var text = $("#root")[0].innerHTML;
+      var text = consoleRoot[0].innerHTML;
       var index = text.lastIndexOf("guest@DAVIDWLIANG:");
       var imgIndex = text.lastIndexOf("<img");
       if (imgIndex > index) {
             text = text.slice(0, imgIndex);
       }
-      if (text.slice(index + this.console.guest.prompt.length - 1) !== " ") {
+      if (text.slice(index + guest.prompt.length - 1) !== " ") {
             this.printed = 0;
             return;
       }
       this.printed++;
       this.suggestNow = false;
-      $("#root")[0].innerHTML = text.slice(0, index);
+      consoleRoot[0].innerHTML = text.slice(0, index);
       this.suggestion = this.brain.suggestions[this.suggestionIndex++];
       this.suggestionIndex %= this.brain.suggestions.length;
       this.pln(this.suggestion);
-      this.console.promptGuest();
+      consoul.promptGuest();
 };
 
 Assistant.prototype.pln = function (str) {
-      this.console.pln("<span class=\"green\">" + this.prompt + str + "</span>");
+      consoul.pln("<span class=\"green\">" + this.prompt + str + "</span>");
 };
 
 Assistant.prototype.randomComment = function () {
@@ -129,20 +132,20 @@ Assistant.prototype.randomComment = function () {
 };
 
 Assistant.prototype.showCats = function () {
-      $("#root").empty();
-      $("#cats").show();
+      consoleRoot.empty();
+      cats.show();
       this.pln('I\'ve found some cats for you to watch. Type \'clear\' to hide the video.');
       return true;
 };
 
 Assistant.prototype.clear = function (suggest) {
       this.response = 'clear';
-      $("#tetris").hide();
+      tetris.hide();
       var url = $('#cats').attr('src');
       $('#cats').attr('src', '');
       $('#cats').attr('src', url);
-      $("#cats").hide();
-      $("#root").empty();
+      cats.hide();
+      consoleRoot.empty();
       this.showingTetris = false;
       GM.stopped = true;
       if (suggest) {
@@ -225,10 +228,10 @@ Assistant.prototype.linkedIn = function () {
 
 Assistant.prototype.tetris = function () {
       this.showingTetris = true;
-      $("#root").empty();
-      $("#tetris").show();
+      consoleRoot.empty();
+      tetris.show();
       GameManager.setup(GM);
-      $("#play-button").click();
+      playbutton.click();
       this.printed = this.brain.suggestions.length;
       this.pln('Have fun! Type \'clear\' to hide the game.');
       return true;

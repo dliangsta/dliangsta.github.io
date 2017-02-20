@@ -1,6 +1,6 @@
 'user strict';
 
-function Console(assistant) {
+function Consoul(assistant) {
       this.query = "";
       this.buffer ="";
       this.space = document.createElement("IMG");
@@ -13,16 +13,15 @@ function Console(assistant) {
       this.timeoutIndex = 0;
       this.timeoutMultiplier = 20;
       this.assistant = assistant;
-      this.guest = this.assistant.guest;
 }
 
 
-Console.prototype.blink = function () {
+Consoul.prototype.blink = function () {
       if (this.over || !this.blinking) {
             this.clearSpace();
             return;
       }
-      var html = $("#root")[0].innerHTML;
+      var html = consoleRoot[0].innerHTML;
       if (Date.now() - this.recentInputTime < this.intervalTime) {
             this.clearSpace();
             return;
@@ -33,31 +32,31 @@ Console.prototype.blink = function () {
 
 };
 
-Console.prototype.clearSpace = function () {
-      var html = $("#root")[0].innerHTML;
+Consoul.prototype.clearSpace = function () {
+      var html = consoleRoot[0].innerHTML;
       if (html.includes(this.imgHTML)) {
-            $("#root")[0].innerHTML = html.replace(this.imgHTML, "");
+            consoleRoot[0].innerHTML = html.replace(this.imgHTML, "");
             return true;
       } else {
             return false;
       }
 };
 
-Console.prototype.timeout = function (func, arg, arg2, time) {
+Consoul.prototype.timeout = function (func, arg, arg2, time) {
       var timeout = time || this.timeoutIndex++ * this.timeoutMultiplier;
       setTimeout(function () {
             func(arg, arg2);
       }.bind(this), timeout);
 };
 
-Console.prototype.print100 = function () {
+Consoul.prototype.print100 = function () {
       for (var i = 0; i < 100; i++) {
             this.p('/');
       }
       this.pln('');
 };
 
-Console.prototype.welcomepln = function (str, node) {
+Consoul.prototype.welcomepln = function (str, node) {
       this.p("//");
       for (var i = 0; i < 50 - str.length / 2; i++) {
             this.p("&nbsp;");
@@ -75,22 +74,22 @@ Console.prototype.welcomepln = function (str, node) {
       this.pln();
 };
 
-Console.prototype.pln = function (string) {
+Consoul.prototype.pln = function (string) {
       var str = string || "";
       this.p(str + "</br>");
 };
 
-Console.prototype.p = function (string) {
+Consoul.prototype.p = function (string) {
       if (!this.over) {
-            $("#root").append(string);
-            while ($("#root").height() >= 700) {
-                  var ind = $("#root")[0].innerHTML.slice(1).indexOf("<br>");
-                  $("#root")[0].innerHTML = $("#root")[0].innerHTML.slice(ind + 1);
+            consoleRoot.append(string);
+            while (consoleRoot.height() >= 700) {
+                  var ind = consoleRoot[0].innerHTML.slice(1).indexOf("<br>");
+                  consoleRoot[0].innerHTML = consoleRoot[0].innerHTML.slice(ind + 1);
             }
       }
 };
 
-Console.prototype.onKeypress = function (event) {
+Consoul.prototype.onKeypress = function (event) {
       if (event.key === "Enter") {
             this.blinking = false;
             this.waiting = true;
@@ -138,7 +137,7 @@ Console.prototype.onKeypress = function (event) {
       }
 };
 
-Console.prototype.onKeydown = function (event) {
+Consoul.prototype.onKeydown = function (event) {
       if (event.key === " ") {
             this.onKeypress(event);
       } else if (event.key == "Backspace") {
@@ -146,24 +145,24 @@ Console.prototype.onKeydown = function (event) {
       }
 };
 
-Console.prototype.backspace = function () {
-      var text = $("#root")[0].innerHTML;
+Consoul.prototype.backspace = function () {
+      var text = consoleRoot[0].innerHTML;
       var imgIndex = text.lastIndexOf("<img");
       if (imgIndex >= 0) {
             text = text.slice(0, imgIndex);
       }
       if (text.slice(text.length - 2, text.length) !== ": ") {
             text = text.slice(0, text.length - 1);
-            $("#root")[0].innerHTML = text;
+            consoleRoot[0].innerHTML = text;
             this.query = this.query.slice(0, this.query.length - 1);
       }
 };
 
-Console.prototype.promptGuest = function () {
-      this.p(this.guest.prompt + this.buffer);
+Consoul.prototype.promptGuest = function () {
+      this.p(guest.prompt + this.buffer);
 };
 
-Console.prototype.respond = function () {
+Consoul.prototype.respond = function () {
       if (this.assistant.respond(this.query) === false) {
             return false;
       } else {
@@ -172,7 +171,7 @@ Console.prototype.respond = function () {
       }
 };
 
-Console.prototype.welcome = function () {
+Consoul.prototype.welcome = function () {
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
@@ -185,23 +184,20 @@ Console.prototype.welcome = function () {
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.welcomepln.bind(this), '');
       this.timeout(this.print100.bind(this));
-      this.timeout(this.assistant.welcome.bind(this.assistant));
-      this.timeout(this.promptGuest.bind(this));
-      this.timeout(this.assistant.suggest.bind(this.assistant));
       var listen = function () {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
             this.interval = setInterval(this.blink.bind(this), this.intervalTime);
       };
+      this.timeout(assistant.pln.bind(assistant), 'Welcome! I\'m David Liang and I\'ll be helping you get to know me!');
       this.timeout(listen.bind(this));
-      this.timeoutIndex = 0;
 };
 
 
-Console.prototype.end = function () {
-      $("#tetris").hide();
-      $("#cats").hide();
-      $("#root").empty();
+Consoul.prototype.end = function () {
+      tetris.hide();
+      cats.hide();
+      consoleRoot.empty();
       this.print100();
       for (var i = 0; i < 4; i++) {
             if (i == 2) {
@@ -221,19 +217,6 @@ Console.prototype.end = function () {
       }.bind(this));
 };
 
-Console.prototype.printInformation = function (func) {
+Consoul.prototype.printInformation = function (func) {
       this.timeout(func.bind(this), brain.socialStr, brain.socialDivs);
 };
-
-$(document).ready(function () {
-      assistant = new Assistant();
-      $("#cats").hide();
-      $("#tetris").hide();
-      setTimeout(function () {
-            assistant.console.welcome();
-      }, assistant.welcomeDelay);
-});
-
-function hyperlink(text, url) {
-      return '<a target="_blank" class="glow" href=\'' + url + '\'>' + text + '</a>';
-}

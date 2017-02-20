@@ -46,3 +46,8 @@ function Brain(assistant) {
             "You can also type '" + hyperlink("Tetris", "http://github.com/dliangsta/Tetris-AI") + "' to play Tetris or to watch my AI!"
       ];
 }
+
+
+function hyperlink(text, url) {
+      return '<a target="_blank" class="glow" href=\'' + url + '\'>' + text + '</a>';
+}

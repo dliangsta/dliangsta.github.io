@@ -75,15 +75,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="js/Guest.js"></script>
     <script src="js/Brain.js"></script>
-    <script src="js/Console.js"></script>
+    <script src="js/Consoul.js"></script>
     <script src="js/Assistant.js"></script>
     <script src="Tetris-AI/Piece.js"></script>
     <script src="Tetris-AI/Board.js"></script>
     <script src="Tetris-AI/AI.js"></script>
     <script src="Tetris-AI/GameManager.js"></script>
     <script>
-        var assistant, brain, console, guest;
+        var tetris = $("#tetris");
+        var cats = $("#cats");
+        var playbutton = $("#play-button");
+        var consoleRoot = $("#root");
+        var assistant, brain, consoul, guest;
         var GM = new GameManager(false);
+        $(document).ready(function () {
+            assistant = new Assistant();
+            cats.hide();
+            tetris.hide();
+            setTimeout(function () {
+                assistant.welcome();
+            }, assistant.welcomeDelay);
+        });
     </script>
 </body>
 
