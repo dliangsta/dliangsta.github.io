@@ -1,6 +1,7 @@
 'use strict';
 
-function Guest() {
+function Guest()
+{
       this.name = "guest@DAVIDWLIANG";
       this.prompt = this.name + ": ";
 }

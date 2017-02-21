@@ -111,7 +111,6 @@ Assistant.prototype.suggest = function ()
         text = text.slice(0, imgIndex);
     }
     var slice = text.slice(index + guest.prompt.length - 1);
-    console.log(slice.length);
     if (slice !== " ") {
         this.printed = 0;
         return;
