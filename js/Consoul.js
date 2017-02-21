@@ -1,8 +1,9 @@
 'use strict';
 
-function Consoul(assistant) {
+function Consoul(assistant)
+{
       this.query = "";
-      this.buffer ="";
+      this.buffer = "";
       this.space = document.createElement("IMG");
       this.space.src = "img/space.png";
       this.imgHTML = "<img src=\"" + this.space.src + "\">";
@@ -11,12 +12,13 @@ function Consoul(assistant) {
       this.blinking = true;
       this.responseDelay = 250;
       this.timeoutIndex = 0;
-      this.timeoutMultiplier = 20;
-      this.assistant = assistant;
+      this.timeoutMultiplier = 50;
+      assistant = assistant;
 }
 
 
-Consoul.prototype.blink = function () {
+Consoul.prototype.blink = function ()
+{
       if (this.over || !this.blinking) {
             this.clearSpace();
             return;
@@ -32,7 +34,8 @@ Consoul.prototype.blink = function () {
 
 };
 
-Consoul.prototype.clearSpace = function () {
+Consoul.prototype.clearSpace = function ()
+{
       var html = consoleRoot[0].innerHTML;
       if (html.includes(this.imgHTML)) {
             consoleRoot[0].innerHTML = html.replace(this.imgHTML, "");
@@ -42,44 +45,77 @@ Consoul.prototype.clearSpace = function () {
       }
 };
 
-Consoul.prototype.timeout = function (func, arg, arg2, time) {
-      var timeout = time || this.timeoutIndex++ * this.timeoutMultiplier;
-      setTimeout(function () {
+Consoul.prototype.timeout = function (func, arg, arg2, key)
+{
+      if (this.timeoutKey !== 0 && key) {
+            if (key !== this.timeoutKey) {
+                  setTimeout(function ()
+                  {
+                        this.timeout(func, arg, arg2, key);
+                  }.bind(this), this.timeoutMultiplier + 1);
+                  return;
+            }
+      }
+      setTimeout(function ()
+      {
             func(arg, arg2);
-      }.bind(this), timeout);
+      }.bind(this), this.timeoutIndex++ * this.timeoutMultiplier);
 };
 
-Consoul.prototype.print100 = function () {
+Consoul.prototype.welcomeBlock = function (strings, printInformation)
+{
+      this.timeoutKey = -1;
+      this.timeout(this.print100.bind(this), '', '', this.timeoutKey);
+      this.timeout(this.welcomepln.bind(this), '', '', this.timeoutKey);
+      for (var i = 0; i < strings.length; i++) {
+            this.timeout(this.welcomepln.bind(this), strings[i], '', this.timeoutKey);
+      }
+      this.timeout(this.welcomepln.bind(this), '', '', this.timeoutKey);
+      if (printInformation) {
+            this.timeout(this.printInformation.bind(this), '', '', this.timeoutKey);
+            this.timeout(this.welcomepln.bind(this), '', '', this.timeoutKey);
+      }
+      this.timeout(this.print100.bind(this), '', '', this.timeoutKey);
+      this.timeoutKey = 0;
+}
+
+Consoul.prototype.print100 = function ()
+{
+      var str = '';
       for (var i = 0; i < 100; i++) {
-            this.p('/');
+            str += '/';
       }
-      this.pln('');
+      this.pln(str);
 };
 
-Consoul.prototype.welcomepln = function (str, node) {
-      this.p("//");
+Consoul.prototype.welcomepln = function (str, node)
+{
+      var out = "//";
       for (var i = 0; i < 50 - str.length / 2; i++) {
-            this.p("&nbsp;");
+            out += "&nbsp;";
       }
+
       if (node) {
-            this.p(node);
+            out += node;
       } else {
-            this.p(str);
+            out += str;
       }
 
       for (var i = 0; i < 50 - (str.length + 1) / 2 - 4; i++) {
-            this.p("&nbsp;");
+            out += "&nbsp;";
       }
-      this.p("//");
-      this.pln();
+      out += "//";
+      this.pln(out);
 };
 
-Consoul.prototype.pln = function (string) {
+Consoul.prototype.pln = function (string)
+{
       var str = string || "";
       this.p(str + "</br>");
 };
 
-Consoul.prototype.p = function (string) {
+Consoul.prototype.p = function (string)
+{
       if (!this.over) {
             consoleRoot.append(string);
             while (consoleRoot.height() >= 700) {
@@ -89,17 +125,35 @@ Consoul.prototype.p = function (string) {
       }
 };
 
-Consoul.prototype.onKeypress = function (event) {
+Consoul.prototype.clear = function (suggest)
+{
+      tetris.html("<div id='tetris'></div>");
+      cats.html("<div id='cats'></div>");
+      cubing.html("<div id='cubing'></div>");
+      consoleRoot.empty();
+      if (GM) {
+            GM.stopped = true;
+      }
+      if (suggest) {
+            assistant.suggest();
+      }
+      return true;
+}
+
+Consoul.prototype.onKeypress = function (event)
+{
       if (event.key === "Enter") {
             this.blinking = false;
             this.waiting = true;
-            setTimeout(function () {
+            setTimeout(function ()
+            {
                   this.pln();
-                  if (this.query !== "") {
-                        if (!this.respond()) {
+                  if (this.query !== "" && this.query !== " ") {
+                        if (this.respond() === false) {
                               this.end();
-                              setTimeout(function () {
-                                    if (this.assistant.redirectHome) {
+                              setTimeout(function ()
+                              {
+                                    if (assistant.redirectHome) {
                                           window.location.href = "home.html";
                                     }
                               }.bind(this), 1000);
@@ -137,7 +191,8 @@ Consoul.prototype.onKeypress = function (event) {
       }
 };
 
-Consoul.prototype.onKeydown = function (event) {
+Consoul.prototype.onKeydown = function (event)
+{
       if (event.key === " ") {
             this.onKeypress(event);
       } else if (event.key == "Backspace") {
@@ -145,7 +200,8 @@ Consoul.prototype.onKeydown = function (event) {
       }
 };
 
-Consoul.prototype.backspace = function () {
+Consoul.prototype.backspace = function ()
+{
       var text = consoleRoot[0].innerHTML;
       var imgIndex = text.lastIndexOf("<img");
       if (imgIndex >= 0) {
@@ -158,12 +214,14 @@ Consoul.prototype.backspace = function () {
       }
 };
 
-Consoul.prototype.promptGuest = function () {
+Consoul.prototype.promptGuest = function ()
+{
       this.p(guest.prompt + this.buffer);
 };
 
-Consoul.prototype.respond = function () {
-      if (this.assistant.respond(this.query) === false) {
+Consoul.prototype.respond = function ()
+{
+      if (assistant.respond(this.query) === false) {
             return false;
       } else {
             this.promptGuest();
@@ -171,53 +229,46 @@ Consoul.prototype.respond = function () {
       }
 };
 
-Consoul.prototype.welcome = function () {
-      this.print100();
-      for (var i = 0; i < 4; i++) {
-            if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), brain.signedIn);
-            } else {
-                  this.timeout(this.welcomepln.bind(this), '');
-            }
+Consoul.prototype.welcome = function ()
+{
+      if (!getParameterByName('quick')) {
+            this.welcomeBlock(['Requesting access for guest@DAVIDWLIANG...']);
+            this.timeoutIndex = 50;
+            this.timeout(this.clear.bind(this));
+            this.welcomeBlock(['Access granted! Welcome guest@DAVIDWLIANG.']);
+            this.timeoutIndex = 80;
+            this.timeout(this.clear.bind(this));
       }
-      this.printInformation(this.welcomepln.bind(this));
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.print100.bind(this));
-      var listen = function () {
+      this.welcomeBlock([brain.signedIn], true);
+      var listen = function ()
+      {
             this.keypress = document.addEventListener("keypress", this.onKeypress.bind(this));
             this.keydown = document.addEventListener("keydown", this.onKeydown.bind(this));
             this.interval = setInterval(this.blink.bind(this), this.intervalTime);
       };
-      this.timeout(assistant.pln.bind(assistant), 'Welcome! I\'m David Liang and I\'ll be helping you get to know me!');
-      this.timeout(listen.bind(this));
+      this.timeout(assistant.pln.bind(assistant), 'Welcome! I\'m David Liang and I\'ll be helping you get to know me!', '', 0);
+      this.timeout(listen.bind(this), '', '', 0);
 };
 
-
-Consoul.prototype.end = function () {
+Consoul.prototype.end = function ()
+{
       tetris.hide();
-      cats.hide();
-      cubing.hide();
+      cats.html('<div id="cats"></div>');
+      cubing.html('<div id="cubing"></div>');
       consoleRoot.empty();
-      this.print100();
-      for (var i = 0; i < 4; i++) {
-            if (i == 2) {
-                  this.timeout(this.welcomepln.bind(this), brain.signedOut);
-                  this.timeout(this.welcomepln.bind(this), brain.comeBackSoon);
-            } else {
-                  this.timeout(this.welcomepln.bind(this), '');
-            }
-      }
-      this.printInformation(this.welcomepln.bind(this));
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.welcomepln.bind(this), '');
-      this.timeout(this.print100.bind(this));
-      this.timeout(this.pln.bind(this));
-      this.timeout(function () {
+      this.timeoutIndex = 0;
+      var strings = [
+            brain.signedOut,
+            brain.comeBackSoon
+      ];
+      this.welcomeBlock(strings, true);
+      this.timeout(function ()
+      {
             this.over = true;
       }.bind(this));
 };
 
-Consoul.prototype.printInformation = function (func) {
-      this.timeout(func.bind(this), brain.socialStr, brain.socialDivs);
+Consoul.prototype.printInformation = function ()
+{
+      this.welcomepln(brain.socialStr, brain.socialDivs);
 };

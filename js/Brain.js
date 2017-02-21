@@ -4,7 +4,7 @@ function Brain(assistant) {
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.signedOut = "You are now signed out of guest@DAVIDWLIANG";
       this.comeBackSoon = "Come back soon to see my growth!";
-      this.assistant = assistant;
+      assistant = assistant;
       this.emailAddr = "david.liang@wisc.edu";
       this.resumeURL = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
       this.githubURL = "https://github.com/dliangsta";
@@ -47,9 +47,31 @@ function Brain(assistant) {
             hyperlink("Neural Network Digit Recognition", "https://github.com/dliangsta/Neural-Digit-Recognition"),
             "You can also type '" + hyperlink("Tetris", "http://github.com/dliangsta/Tetris-AI") + "' to play Tetris or to watch my AI!"
       ];
+      this.tetrisDiv = '<div id="tetris" display="hididen" class="consola container game-container">' 
+            + '<canvas id="canvas" class="board sidebyside" width="300px" height="600px"></canvas>'
+            + '<div class="sidebyside"> <div class="controls-container"> <div id="score-container" class="score-container"> 0 '
+            + '</div><div id="next-container" class="next-container"><canvas id="next-piece-canvas" class="next-canvas" width="80px" height="80px"></canvas>'
+            + '</div></div><a id="play-button" class="btn btn-default btn-lg game-btn active" data-toggle="button"> Play </a>'
+            + '<a id="AI-button" class="btn btn-default btn-lg game-btn active" data-toggle="button"> AI </a>'
+            + '<a id="guiding-button" class="btn btn-default btn-lg game-btn active" data-toggle="button"> Guide </a>'
+            + '<a id="reset-button" class="btn btn-default btn-lg game-btn"> Reset </a><p class="instructions"> Instructions: <br/>' 
+            + '&nbsp;&nbsp;&nbsp;&nbsp;a: left <br/> &nbsp;&nbsp;&nbsp;&nbsp;s: down <br/>&nbsp;&nbsp;&nbsp;&nbsp;d: right <br/> &nbsp;&nbsp;&nbsp;&nbsp;q:'
+            + 'rotate ccw <br/> &nbsp;&nbsp;&nbsp;&nbsp;e: rotate cw <br/> space: drop </p></div></div>';
 }
 
 
 function hyperlink(text, url) {
       return '<a target="_blank" class="glow" href=\'' + url + '\'>' + text + '</a>';
+}
+
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
