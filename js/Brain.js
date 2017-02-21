@@ -4,9 +4,9 @@ function Brain(assistant) {
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.signedOut = "You are now signed out of guest@DAVIDWLIANG";
       this.comeBackSoon = "Come back soon to see my growth!";
-      assistant = assistant;
+      this.assistant = assistant;
       this.emailAddr = "david.liang@wisc.edu";
-      this.resumeURL = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view";
+      this.resumeURL = "https://drive.google.com/file/d/0B8RTzcv9knCuaXl2U1RzQlFmSFk/view?usp=sharing";
       this.githubURL = "https://github.com/dliangsta";
       this.linkedinURL = "https://linkedin.com/in/dliangsta";
       this.emailDiv = hyperlink("Email", this.emailAddr);
