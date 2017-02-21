@@ -1,4 +1,4 @@
-'user strict';
+'use strict';
 
 function Consoul(assistant) {
       this.query = "";
@@ -197,6 +197,7 @@ Consoul.prototype.welcome = function () {
 Consoul.prototype.end = function () {
       tetris.hide();
       cats.hide();
+      cubing.hide();
       consoleRoot.empty();
       this.print100();
       for (var i = 0; i < 4; i++) {

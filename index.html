@@ -35,8 +35,9 @@
                                     <p class="console-navbar"> guest@DAVIDWLIANG:/console/ </p>
                                 </div>
                                 <div class="row">
-                                    <iframe id="cats" width="560" height="315" src="https://www.youtube.com/embed/0Bmhjf0rKe8" frameborder="0" allowfullscreen></iframe>
-                                    <div id="tetris" class="consola container game-container">
+                                    <iframe id="cats" display="hidden" width="560" height="315" src="https://www.youtube.com/embed/0Bmhjf0rKe8" frameborder="0" allowfullscreen></iframe>
+                                    <iframe id="cubing" display="hidden" width="560" height="315" src="https://www.youtube.com/embed/XFvndxnZxFk" frameborder="0" allowfullscreen></iframe>
+                                    <div id="tetris" display="hididen" class="consola container game-container">
                                         <div>
                                             <canvas id="canvas" class="board sidebyside" width="300px" height="600px"></canvas>
                                             <div class="sidebyside">
@@ -84,6 +85,7 @@
     <script>
         var tetris = $("#tetris");
         var cats = $("#cats");
+        var cubing = $("#cubing");
         var playbutton = $("#play-button");
         var consoleRoot = $("#root");
         var assistant, brain, consoul, guest;
@@ -91,6 +93,7 @@
         $(document).ready(function () {
             assistant = new Assistant();
             cats.hide();
+            cubing.hide();
             tetris.hide();
             setTimeout(function () {
                 assistant.welcome();

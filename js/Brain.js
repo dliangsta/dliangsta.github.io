@@ -1,3 +1,5 @@
+'use strict';
+
 function Brain(assistant) {
       this.signedIn = "You are now signed in to guest@DAVIDWLIANG";
       this.signedOut = "You are now signed out of guest@DAVIDWLIANG";
