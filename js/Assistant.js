@@ -214,20 +214,20 @@ Assistant.prototype.projects = function ()
 
 Assistant.prototype.showResume = function ()
 {
-    this.pln('Here\'s the link to my ' + brain.resumeDiv.toLowerCase() + '!');
+    this.pln('Here\'s the link to my ' + brain.resumeDiv + '!');
     return true;
 };
 
 Assistant.prototype.email = function ()
 {
-    this.pln("Here's my " + brain.emailDiv.toLowerCase() + "! ");
+    this.pln("Here's my " + brain.emailDiv + "! ");
     return true;
 };
 
 
 Assistant.prototype.github = function ()
 {
-    this.pln('Here\'s my ' + brain.githubDiv.toLowerCase() + '!');
+    this.pln('Here\'s my ' + brain.githubDiv + '!');
     return true;
 };
 
