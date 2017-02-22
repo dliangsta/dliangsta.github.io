@@ -134,7 +134,7 @@
       text-align: left;
 }
 
-.console-background {
+.console {
       border: 10px solid #222222;
       border-style: solid;
       border-top: none;
@@ -591,9 +591,28 @@ h6 {
       text-shadow: 0 0 10px grey;
 }
 
-@media (max-height: 700px) {
+@media only screen and (max-width: 2560px) {
       .console-text {
-            font-size: 10;
+            font-size: 18px !important;
+      }
+      .console {
+            width: 1170px;
+      }
+}
+@media only screen and (max-width: 1440px) {
+      .console-text {
+            font-size: 15px !important;
+      }
+       .console {
+            width: 970px;
+       }
+}
+@media only screen and (max-width: 1080px) {
+      .console-text {
+            font-size: 11px !important;
+      }
+       .console {
+            width: 770px;
       }
 }
 
